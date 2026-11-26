@@ -37,7 +37,7 @@ button{font:inherit;cursor:pointer;border:0;border-radius:16px;min-height:52px;p
 button:focus-visible{outline:4px solid var(--teal);outline-offset:2px}
 .big{font-family:Jua;font-size:22px;color:#fff;box-shadow:0 5px 0 rgba(0,0,0,.25);transition:transform .08s}
 .big:active{transform:translateY(3px);box-shadow:0 2px 0 rgba(0,0,0,.25)}
-.res{background:var(--red)}.pur{background:var(--teal)}.go{background:#1f1a17;color:#fff}
+.res{background:var(--red)}.blue{background:#1e6fd9}.pur{background:var(--teal)}.go{background:#1f1a17;color:#fff}
 .big small{display:block;font-family:"Noto Sans KR";font-size:14px;opacity:.9}
 .opt{background:var(--bg);color:var(--ink);border:3px solid var(--line);font-size:18px;text-align:left;font-weight:700}
 .opt:hover{border-color:var(--mus)}
@@ -168,7 +168,7 @@ function show(){
     const draw=()=>{app.innerHTML=`<div class="card">${head(q)}<p class="q" style="font-size:20px">${esc(q.ko)}</p><p class="help">단어를 눌러 순서대로 놓아요. 놓은 단어를 누르면 빠져요.</p>
       <div class="slot" id="slot">${placed.map((p,k)=>`<button class="chip" data-out="${k}">${esc(p.w)}</button>`).join('')}</div>
       <div class="chips">${pool.map((p,k)=>`<button class="chip ${/^(so|that)$/i.test(p.w)?'k':''}" data-in="${k}">${esc(p.w)}</button>`).join('')}</div>
-      <div class="btns"><button class="big go" id="chk" ${pool.length?'disabled style="opacity:.45"':''}>완성!</button><button class="big pur" id="rst">다시 놓기</button></div><div id="fb"></div></div>`;
+      <div class="btns"><button class="big blue" id="chk" ${pool.length?'disabled style="opacity:.45"':''}>완성!</button><button class="big go" id="rst">다시 배열</button></div><div id="fb"></div></div>`;
       app.querySelectorAll('[data-in]').forEach(b=>b.onclick=()=>{placed.push(pool.splice(+b.dataset.in,1)[0]);draw()});
       app.querySelectorAll('[data-out]').forEach(b=>b.onclick=()=>{pool.push(placed.splice(+b.dataset.out,1)[0]);draw()});
       document.getElementById('rst').onclick=()=>{pool=pool.concat(placed);placed=[];draw()};
