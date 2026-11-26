@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>so that 푸드트럭</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Jua&family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet">
+<style>
+/* VOICE: 신나는 길거리 푸드트럭, 중학생이 혼자 즐겁게 도는 15문제
+   IDEA: 세계 음식을 파는 푸드트럭 — 정답마다 그 나라 음식 도장을 받는 여권
+   PICTURE: 케첩색 차양을 단 트럭 SVG, 진행에 따라 도로 위를 달림
+   COLOUR and TYPE: 케첩 빨강 + 머스터드 노랑 + 피클 청록, 흰 바탕 / 밤의 거리; Jua + Noto Sans KR
+   LAYOUT: 상단 도로 진행바, 가운데 큰 문제 카드, 아래 큰 버튼 */
+:root{color-scheme:light dark;
+ --bg:light-dark(#ffffff,#16181f);--ink:light-dark(#1f1a17,#f4efe6);--soft:light-dark(#6b625b,#b9b0a5);
+ --red:#e2412b;--mus:#f5b51b;--teal:light-dark(#0e7c7b,#3cc2b8);--card:light-dark(#fff7e6,#232733);
+ --line:light-dark(#efe2c8,#343a48);--ok:light-dark(#0e7c4a,#4ad391);--no:light-dark(#c62828,#ff7a6b)}
+:root[data-theme=light]{color-scheme:light}:root[data-theme=dark]{color-scheme:dark}
+*{box-sizing:border-box;min-width:0}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 "Noto Sans KR",system-ui,sans-serif;overflow-x:clip}
+h1,h2,h3,.jua{font-family:Jua,"Noto Sans KR",sans-serif;font-weight:400}
+.top{background:var(--mus);color:#1f1a17;padding:14px max(4vw,14px) 10px}
+.top .row{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;max-width:880px;margin:auto}
+.top h1{margin:0;font-size:clamp(22px,4vw,30px);line-height:1.05}
+.pill{background:#1f1a17;color:#fff;border-radius:99px;padding:4px 14px;font-family:Jua;font-size:18px;white-space:nowrap}
+.road{position:relative;height:54px;max-width:880px;margin:8px auto 0}
+.road:before{content:"";position:absolute;left:0;right:0;bottom:6px;height:8px;border-radius:4px;background:repeating-linear-gradient(90deg,#1f1a17 0 24px,#fff 24px 36px)}
+.road svg{position:absolute;bottom:10px;width:64px;height:44px;left:0;transition:left .6s cubic-bezier(.3,1.4,.5,1)}
+main{max-width:880px;margin:auto;padding:22px max(4vw,14px) 40px}
+.card{background:var(--card);border:3px solid var(--line);border-radius:22px;padding:clamp(18px,3vw,30px)}
+.tag{display:inline-block;background:var(--red);color:#fff;border-radius:10px;padding:2px 12px;font-family:Jua;font-size:17px}
+.q{font-size:clamp(20px,3.4vw,28px);line-height:1.35;margin:14px 0 6px;font-weight:700;white-space:pre-line}
+.help{color:var(--soft);margin:0 0 14px}
+.btns{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+button{font:inherit;cursor:pointer;border:0;border-radius:16px;min-height:52px;padding:10px 16px}
+button:focus-visible{outline:4px solid var(--teal);outline-offset:2px}
+.big{font-family:Jua;font-size:22px;color:#fff;box-shadow:0 5px 0 rgba(0,0,0,.25);transition:transform .08s}
+.big:active{transform:translateY(3px);box-shadow:0 2px 0 rgba(0,0,0,.25)}
+.res{background:var(--red)}.pur{background:var(--teal)}.go{background:#1f1a17;color:#fff}
+.big small{display:block;font-family:"Noto Sans KR";font-size:14px;opacity:.9}
+.opt{background:var(--bg);color:var(--ink);border:3px solid var(--line);font-size:18px;text-align:left;font-weight:700}
+.opt:hover{border-color:var(--mus)}
+.opt.right{border-color:var(--ok);background:color-mix(in srgb,var(--ok) 14%,var(--bg))}
+.opt.wrong{border-color:var(--no);background:color-mix(in srgb,var(--no) 14%,var(--bg))}
+.slot{min-height:64px;border:3px dashed var(--line);border-radius:16px;padding:8px;display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:12px;background:var(--bg)}
+.slot:empty:before{content:"단어를 순서대로 눌러 문장을 만들어요";color:var(--soft);padding-left:6px}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px}
+.chip{background:var(--mus);color:#1f1a17;font-weight:700;font-size:19px;min-height:46px;padding:6px 14px;border-radius:12px;box-shadow:0 3px 0 rgba(0,0,0,.2)}
+.chip.k{background:var(--red);color:#fff}
+.slot .chip{background:var(--teal);color:#fff}
+.fb{margin-top:16px;border-radius:16px;padding:14px 16px;font-size:17px}
+.fb.ok{background:color-mix(in srgb,var(--ok) 15%,var(--bg));border:2px solid var(--ok)}
+.fb.ng{background:color-mix(in srgb,var(--no) 13%,var(--bg));border:2px solid var(--no)}
+.fb b.h{font-family:Jua;font-size:22px;font-weight:400}
+.fb .ans{font-weight:700;color:var(--teal)}
+.hero{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:24px;align-items:center}
+.hero svg{width:100%;height:auto}
+.hero h2{font-size:clamp(30px,5vw,46px);line-height:1.05;margin:0 0 10px}
+.steps{padding-left:20px;margin:10px 0 16px}.steps li{margin:4px 0}
+input{font:inherit;font-size:18px;width:100%;padding:12px 14px;border-radius:14px;border:3px solid var(--line);background:var(--bg);color:var(--ink);margin-bottom:12px}
+input:focus{outline:none;border-color:var(--teal)}
+.stamps{display:grid;grid-template-columns:repeat(auto-fill,minmax(78px,1fr));gap:10px;margin:14px 0}
+.stamp{aspect-ratio:1;border-radius:50%;border:4px double currentColor;display:grid;place-items:center;text-align:center;font-family:Jua;font-size:16px;line-height:1.1;transform:rotate(var(--r));padding:6px}
+.stamp span{display:block;font-family:"Noto Sans KR";font-size:11px}
+.stamp.off{color:var(--line)!important}
+.review{border-top:2px solid var(--line);padding:10px 0}
+.review p{margin:2px 0}
+.cert{background:var(--mus);color:#1f1a17;border-radius:22px;padding:22px;text-align:center}
+.cert h2{margin:0;font-size:clamp(30px,6vw,48px);line-height:1.05}
+.combo{font-family:Jua;color:var(--red);font-size:20px;min-height:28px;text-align:right}
+@media(max-width:600px){.hero{grid-template-columns:1fr}.btns{grid-template-columns:1fr}}
+@media(prefers-reduced-motion:reduce){.road svg{transition:none}}
+</style>
+</head>
+<body>
+<div class="top"><div class="row"><h1>so that 푸드트럭</h1><span class="pill" id="score">0점</span></div>
+<div class="road"><svg id="mini" viewBox="0 0 64 44"><rect x="2" y="8" width="46" height="26" rx="5" fill="#e2412b"/><rect x="40" y="16" width="20" height="18" rx="4" fill="#e2412b"/><rect x="45" y="19" width="11" height="8" rx="2" fill="#bfe8ff"/><rect x="2" y="6" width="38" height="6" fill="#fff"/><rect x="2" y="6" width="6" height="6" fill="#e2412b"/><rect x="14" y="6" width="6" height="6" fill="#e2412b"/><rect x="26" y="6" width="6" height="6" fill="#e2412b"/><circle cx="14" cy="36" r="6" fill="#1f1a17"/><circle cx="48" cy="36" r="6" fill="#1f1a17"/><circle cx="14" cy="36" r="2.5" fill="#ddd"/><circle cx="48" cy="36" r="2.5" fill="#ddd"/></svg></div>
+</div>
+<main id="app"></main>
+
+<script>
+{
+const R1=[
+ ["The pizza was so hot that I burned my tongue.","결과","피자가 너무 뜨거워서 혀를 데었다."],
+ ["I ate breakfast so that I wouldn't be hungry in class.","목적","수업 시간에 배고프지 않도록 아침을 먹었다."],
+ ["She cooked so well that everyone wanted more.","결과","그녀가 요리를 너무 잘해서 모두가 더 먹고 싶어 했다."],
+ ["He went to the market early so that he could buy fresh fish.","목적","신선한 생선을 살 수 있도록 일찍 시장에 갔다."],
+ ["The curry was so spicy that I drank lots of water.","결과","카레가 너무 매워서 물을 많이 마셨다."],
+ ["Speak louder so that everyone can hear you.","목적","모두가 들을 수 있도록 더 크게 말해."],
+ ["The line was so long that we waited for an hour.","결과","줄이 너무 길어서 한 시간을 기다렸다."],
+ ["I practiced chopsticks so that I could eat sushi well.","목적","초밥을 잘 먹을 수 있도록 젓가락질을 연습했다."],
+ ["The cake was so sweet that I couldn't finish it.","결과","케이크가 너무 달아서 다 먹을 수 없었다."],
+ ["Mom bought a big pot so that she could make soup for everyone.","목적","모두를 위한 수프를 만들 수 있도록 엄마는 큰 냄비를 샀다."],
+ ["The noodles were so long that I cut them.","결과","국수가 너무 길어서 잘랐다."],
+ ["We left early so that we wouldn't miss the bus.","목적","버스를 놓치지 않도록 일찍 출발했다."]];
+const R2=[
+ ["The soup was so salty that I couldn't eat it.","수프가 너무 짜서 먹을 수 없었다."],
+ ["I saved money so that I could buy a taco.","타코를 살 수 있도록 돈을 모았다."],
+ ["She ran so fast that she caught the bus.","그녀는 너무 빨리 달려서 버스를 탔다."],
+ ["He studied hard so that he could pass the test.","시험에 통과할 수 있도록 열심히 공부했다."],
+ ["The tea was so hot that I waited a minute.","차가 너무 뜨거워서 잠깐 기다렸다."],
+ ["Turn on the light so that we can see the menu.","메뉴를 볼 수 있도록 불을 켜 줘."],
+ ["The movie was so funny that we laughed a lot.","영화가 너무 웃겨서 많이 웃었다."],
+ ["I set an alarm so that I could wake up early.","일찍 일어날 수 있도록 알람을 맞췄다."]];
+const R3=[
+ ["Kevin is strong enough to lift the box.\n= Kevin is ______ he can lift the box.",["so strong that","strong so that","too strong that","so that strong"],"형/부 + enough to ~ = so + 형/부 + that + 주어 can"],
+ ["She was too tired to walk.\n= She was so tired that she ______ walk.",["couldn't","could","can","so"],"too ~ to = so ~ that + 주어 can't (과거 문장이니 couldn't)"],
+ ["I got up early to catch the bus.\n= I got up early ______ I could catch the bus.",["so that","so","too","enough"],"목적의 to부정사(~하기 위해) = so that + 주어 can/could"],
+ ["He is too short to reach the shelf.\n= He is so short that he ______ reach the shelf.",["can't","can","could","so that"],"too ~ to = so ~ that ... can't (현재 문장이니 can't)"],
+ ["The box was light enough to carry.\n= The box was so light that I ______ carry it.",["could","couldn't","can't","too"],"enough to = so ~ that ... can (과거 문장이니 could)"],
+ ["It was ______ cold that the lake froze.",["so","too","enough","very"],"뒤에 that + 결과가 오면 so! (very는 that절과 짝이 아니에요)"],
+ ["Use a big plate ______ the food doesn't fall.",["so that","so","too","enough"],"음식이 떨어지지 않도록 → 목적이니까 so that"],
+ ["We whispered so that the baby could sleep.\n가장 알맞은 뜻은?",["아기가 잘 수 있도록 우리는 속삭였다.","우리가 너무 속삭여서 아기가 잤다.","아기가 자서 우리는 속삭였다.","우리는 너무 조용해서 잘 수 없었다."],"so that이 붙어 있으면 목적: ~할 수 있도록"],
+ ["The tea was so hot that I couldn't drink it.\n가장 알맞은 뜻은?",["차가 너무 뜨거워서 마실 수 없었다.","차를 마실 수 있도록 뜨겁게 했다.","차가 뜨거워서 마셨다.","차가 마시기에 충분히 뜨거웠다."],"so + 형용사 + that 은 결과: 너무 ~해서 …하다"],
+ ["The pasta was delicious. I ate two plates.\n→ The pasta was ______ I ate two plates.",["so delicious that","so that delicious","too delicious to","delicious enough that"],"원인 + 결과를 한 문장으로: so + 형용사 + that"]];
+const DISH=[["피자","Italy","#e2412b"],["초밥","Japan","#0e7c7b"],["타코","Mexico","#d98a00"],["쌀국수","Vietnam","#2e7d32"],["크루아상","France","#1565c0"],["카레","India","#c66a00"],["비빔밥","Korea","#c62828"],["파에야","Spain","#e08e0b"],["케밥","Turkey","#8e3b2f"],["딤섬","China","#d32f2f"],["버거","USA","#283593"],["팟타이","Thailand","#00897b"],["피시앤칩스","UK","#37474f"],["프레첼","Germany","#6d4c41"],["추로스","Spain","#ad6800"]];
+const app=document.getElementById('app'),scoreEl=document.getElementById('score'),mini=document.getElementById('mini');
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const shuf=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]]}return a};
+let S;let AC=null;
+function beep(ok){try{AC=AC||new(window.AudioContext||window.webkitAudioContext)();const t=AC.currentTime;(ok?[660,880]:[260,200]).forEach((f,i)=>{const o=AC.createOscillator(),g=AC.createGain();o.frequency.value=f;o.type=ok?'triangle':'sawtooth';g.gain.setValueAtTime(.12,t+i*.1);g.gain.exponentialRampToValueAtTime(.001,t+i*.1+.18);o.connect(g).connect(AC.destination);o.start(t+i*.1);o.stop(t+i*.1+.2)})}catch(e){}}
+function build(){
+  const qs=[];
+  shuf(R1).slice(0,6).forEach(x=>qs.push({t:1,en:x[0],a:x[1],ko:x[2]}));
+  shuf(R2).slice(0,4).forEach(x=>qs.push({t:2,en:x[0],ko:x[1]}));
+  shuf(R3).slice(0,5).forEach(x=>qs.push({t:3,q:x[0],a:x[1][0],opts:shuf(x[1]),why:x[2]}));
+  return qs}
+function setTruck(){const n=S?S.qs.length:15,i=S?S.i:0;mini.style.left=`calc(${Math.min(i/n,1)*100}% - ${Math.min(i/n,1)*64}px)`;scoreEl.textContent=(S?S.score:0)+'점'}
+function truckBig(){return `<svg viewBox="0 0 320 210" role="img" aria-label="세계 음식 푸드트럭">
+<ellipse cx="160" cy="196" rx="140" ry="9" fill="#000" opacity=".12"/>
+<rect x="18" y="56" width="214" height="120" rx="16" fill="#e2412b"/><rect x="18" y="150" width="292" height="26" rx="8" fill="#b52d1d"/>
+<path d="M232 84h44q22 0 30 30v36h-74z" fill="#e2412b"/><path d="M242 92h32q14 0 20 22h-52z" fill="#bfe8ff"/>
+<rect x="40" y="76" width="150" height="58" rx="8" fill="#fff7e6"/><text x="115" y="114" text-anchor="middle" font-family="Jua" font-size="30" fill="#0e7c7b">so that</text>
+<g>${[0,1,2,3,4,5,6].map(i=>`<path d="M${18+i*30.6} 38h30.6v18q-15.3 14-30.6 0z" fill="${i%2?'#fff':'#f5b51b'}"/>`).join('')}</g>
+<rect x="14" y="30" width="222" height="10" rx="5" fill="#1f1a17"/>
+${[[70,176],[260,176]].map(([x,y])=>`<circle cx="${x}" cy="${y}" r="22" fill="#1f1a17"/><circle cx="${x}" cy="${y}" r="9" fill="#ddd"/>`).join('')}
+<circle cx="292" cy="140" r="6" fill="#f5b51b"/></svg>`}
+function start(){
+  setTruck();
+  app.innerHTML=`<div class="card hero"><div>${truckBig()}</div><div>
+  <span class="tag">Lesson 7 · The Taste of the World</span>
+  <h2>세계 음식 도장을<br>모아라!</h2>
+  <p class="help">정답을 맞힐 때마다 그 나라 음식 도장을 받아요. 연속 정답이면 보너스!</p>
+  <ol class="steps"><li><b>주문 분류</b> 결과일까? 목적일까? (6문제)</li><li><b>레시피 조립</b> 단어로 문장 만들기 (4문제)</li><li><b>메뉴판 완성</b> 알맞은 말 고르기 (5문제)</li></ol>
+  <label for="nm" class="jua" style="font-size:18px">셰프 이름 (학번 이름)</label>
+  <input id="nm" maxlength="20" placeholder="예) 20315 김배화" autocomplete="off">
+  <button class="big go" id="go" style="width:100%">출발!</button></div></div>`;
+  const nm=document.getElementById('nm');try{nm.value=localStorage.getItem('sotruck-name')||''}catch(e){}
+  document.getElementById('go').onclick=()=>{const name=nm.value.trim()||'익명 셰프';try{localStorage.setItem('sotruck-name',name)}catch(e){}
+    S={name,qs:build(),i:0,score:0,combo:0,best:0,right:0,miss:[],t0:Date.now()};show()}}
+function head(q){const names={1:'ROUND 1 · 주문 분류',2:'ROUND 2 · 레시피 조립',3:'ROUND 3 · 메뉴판 완성'};
+  return `<div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap"><span class="tag">${names[q.t]}</span><span class="jua" style="font-size:18px">${S.i+1} / ${S.qs.length}</span></div><div class="combo">${S.combo>=2?S.combo+' 연속 정답!':''}</div>`}
+function show(){
+  setTruck();
+  if(S.i>=S.qs.length) return end();
+  const q=S.qs[S.i];
+  if(q.t===1){
+    app.innerHTML=`<div class="card">${head(q)}<p class="q">${esc(q.en)}</p><p class="help">이 문장의 that절은 <b>결과</b>일까요, <b>목적</b>일까요?</p>
+    <div class="btns"><button class="big res" data-v="결과">결과<small>너무 ~해서 …하다</small></button><button class="big pur" data-v="목적">목적<small>~하기 위해서, ~하도록</small></button></div><div id="fb"></div></div>`;
+    app.querySelectorAll('[data-v]').forEach(b=>b.onclick=()=>{app.querySelectorAll('[data-v]').forEach(x=>x.disabled=true);
+      const ok=b.dataset.v===q.a;
+      judge(ok,`<span class="ans">${q.a}</span> — ${esc(q.ko)}<br>${q.a==='결과'?'so와 that 사이에 형용사/부사가 끼어 있어요 → 결과':'so that이 딱 붙어 있어요 → 목적'}`,q.en)})}
+  if(q.t===2){
+    const words=q.en.split(' ');let pool=shuf(words.map((w,i)=>({w,i})));
+    if(pool.every((p,k)=>p.i===k))pool=pool.reverse();
+    let placed=[];
+    const draw=()=>{app.innerHTML=`<div class="card">${head(q)}<p class="q" style="font-size:20px">${esc(q.ko)}</p><p class="help">단어를 눌러 순서대로 놓아요. 놓은 단어를 누르면 빠져요.</p>
+      <div class="slot" id="slot">${placed.map((p,k)=>`<button class="chip" data-out="${k}">${esc(p.w)}</button>`).join('')}</div>
+      <div class="chips">${pool.map((p,k)=>`<button class="chip ${/^(so|that)$/i.test(p.w)?'k':''}" data-in="${k}">${esc(p.w)}</button>`).join('')}</div>
+      <div class="btns"><button class="big go" id="chk" ${pool.length?'disabled style="opacity:.45"':''}>완성!</button><button class="big pur" id="rst">다시 놓기</button></div><div id="fb"></div></div>`;
+      app.querySelectorAll('[data-in]').forEach(b=>b.onclick=()=>{placed.push(pool.splice(+b.dataset.in,1)[0]);draw()});
+      app.querySelectorAll('[data-out]').forEach(b=>b.onclick=()=>{pool.push(placed.splice(+b.dataset.out,1)[0]);draw()});
+      document.getElementById('rst').onclick=()=>{pool=pool.concat(placed);placed=[];draw()};
+      document.getElementById('chk').onclick=()=>{if(pool.length)return;const made=placed.map(p=>p.w).join(' ');
+        app.querySelectorAll('button:not(#nx)').forEach(x=>x.disabled=true);
+        judge(made===q.en,`정답: <span class="ans">${esc(q.en)}</span>${made===q.en?'':'<br>내 문장: '+esc(made)}`,q.en)}};
+    draw()}
+  if(q.t===3){
+    app.innerHTML=`<div class="card">${head(q)}<p class="q">${esc(q.q)}</p><div class="btns" style="margin-top:14px">${q.opts.map((o,k)=>`<button class="opt" data-k="${k}">${esc(o)}</button>`).join('')}</div><div id="fb"></div></div>`;
+    app.querySelectorAll('[data-k]').forEach(b=>b.onclick=()=>{const pick=q.opts[+b.dataset.k],ok=pick===q.a;
+      app.querySelectorAll('[data-k]').forEach(x=>{x.disabled=true;if(q.opts[+x.dataset.k]===q.a)x.classList.add('right')});if(!ok)b.classList.add('wrong');
+      judge(ok,`정답: <span class="ans">${esc(q.a)}</span><br>${esc(q.why)}`,q.q.split('\n').join(' '))})}
+}
+function judge(ok,html,label){
+  beep(ok);
+  if(ok){S.combo++;S.best=Math.max(S.best,S.combo);S.right++;const bonus=S.combo>=2?(S.combo-1)*20:0;S.score+=100+bonus;
+    const d=DISH[(S.right-1)%DISH.length];
+    html=`<b class="h">딩동! ${esc(d[0])} 도장 획득 +${100+bonus}점</b><br>`+html}
+  else{S.combo=0;S.miss.push({label,html});html=`<b class="h">아쉬워요! 다음엔 꼭!</b><br>`+html}
+  const fb=document.getElementById('fb');fb.className='fb '+(ok?'ok':'ng');
+  fb.innerHTML=html+`<div style="margin-top:12px"><button class="big go" id="nx" style="width:100%">${S.i+1<S.qs.length?'다음 주문 ▶':'결과 보기 ▶'}</button></div>`;
+  setTruck();scoreEl.textContent=S.score+'점';
+  const nx=document.getElementById('nx');nx.focus({preventScroll:true});fb.scrollIntoView({behavior:'smooth',block:'nearest'});
+  nx.onclick=()=>{S.i++;show();window.scrollTo({top:0})}}
+function end(){
+  const sec=Math.round((Date.now()-S.t0)/1000),n=S.qs.length;
+  const grade=S.right===n?['마스터 셰프','완벽해요! so ~ that과 so that을 완전히 구별했어요.']:S.right>=12?['수석 셰프','거의 완벽! 틀린 문제만 다시 확인해요.']:S.right>=8?['요리사','좋아요! 결과/목적 구별 테스트를 다시 떠올려 봐요.']:['견습 셰프','괜찮아요. 아래 오답을 읽고 한 번 더 도전!'];
+  app.innerHTML=`<div class="cert"><span class="jua" style="font-size:18px">${esc(S.name)} 셰프의 영업 결과</span><h2>${grade[0]}</h2>
+   <p class="jua" style="font-size:24px;margin:8px 0 0">${S.score}점 · ${S.right}/${n} 정답 · 최고 ${S.best}연속 · ${Math.floor(sec/60)}분 ${sec%60}초</p><p style="margin:6px 0 0">${grade[1]}</p></div>
+   <h3 class="jua" style="font-size:24px;margin:22px 0 0">세계 음식 도장 여권</h3>
+   <div class="stamps">${DISH.map((d,k)=>`<div class="stamp ${k<S.right?'':'off'}" style="color:${d[2]};--r:${(k*37%17)-8}deg">${esc(d[0])}<span>${esc(d[1])}</span></div>`).join('')}</div>
+   ${S.miss.length?`<h3 class="jua" style="font-size:24px;margin:10px 0 0">오답 노트 (${S.miss.length})</h3>${S.miss.map(m=>`<div class="review"><p><b>${esc(m.label)}</b></p><p>${m.html}</p></div>`).join('')}`:''}
+   <p class="help" style="margin-top:16px">이 화면을 캡처해서 클래스룸에 올려요.</p>
+   <div class="btns"><button class="big res" id="again">다시 도전 (새 문제)</button><button class="big pur" id="home">처음 화면</button></div>`;
+  document.getElementById('again').onclick=()=>{S={name:S.name,qs:build(),i:0,score:0,combo:0,best:0,right:0,miss:[],t0:Date.now()};show();window.scrollTo({top:0})};
+  document.getElementById('home').onclick=()=>{S=null;start()};
+  S.i=n;setTruck()}
+start();
+}
+</script>
+</body>
+</html>
